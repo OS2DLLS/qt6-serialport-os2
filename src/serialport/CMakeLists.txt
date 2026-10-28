@@ -4,7 +4,7 @@
 qt_find_package(Libudev PROVIDED_TARGETS PkgConfig::Libudev MODULE_NAME global QMAKE_LIB libudev)
 
 qt_internal_add_module(SerialPort
-    OS2_SHORT_NAME SP
+    OS2_SHORT_NAME Qt6SP
     SOURCES
         qserialport.cpp qserialport.h qserialport_p.h
         qserialportglobal.h
@@ -46,7 +46,7 @@ if(OS2)
     # keeps its C linkage from qserialport_os2.h but is compiled as C++.
     set_source_files_properties(qserialport_os2.c PROPERTIES LANGUAGE CXX)
     # The OS/2 loader requires a short on-disk DLL name.
-    set_target_properties(SerialPort PROPERTIES OUTPUT_NAME "Qt6SP")
+    set_target_properties(SerialPort PROPERTIES IMPORT_SUFFIX ".lib")
 
     if(DEFINED OS2EMX_PREFIX AND DEFINED OS2EMX_TARGET)
         find_program(EMXIMP_EXECUTABLE NAMES emximp
@@ -58,7 +58,7 @@ if(OS2)
         message(FATAL_ERROR "emximp is required to create the OS/2 OMF import library")
     endif()
     add_custom_command(TARGET SerialPort POST_BUILD
-        COMMAND "${EMXIMP_EXECUTABLE}" -p 128 -o
+        COMMAND "${EMXIMP_EXECUTABLE}" -p128 -o
             "$<TARGET_LINKER_FILE:SerialPort>" "$<TARGET_FILE:SerialPort>"
         COMMENT "Generating OS/2 OMF import library"
         VERBATIM)
